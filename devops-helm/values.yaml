@@ -1,0 +1,38 @@
+namespace: desafio-devops
+
+app:
+  replicaCount: 1
+  image:
+    repository: iagouvea/desafio-devops-app
+    tag: latest
+  containerPort: 3000
+
+nginx:
+  replicaCount: 1
+  image:
+    repository: iagouvea/nginx
+    tag: latest
+  containerPort: 80
+
+services:
+  app:
+    port: 3000
+    targetPort: 3000
+  nginx:
+    port: 80
+    targetPort: 80
+    nodePort: 30080
+  db:
+    port: 3306
+    targetPort: 3306
+  
+db:
+  replicaCount: 1
+  image:
+    repository: iagouvea/desafio-devops-db
+    tag: latest
+  containerPort: 3306
+  mysqlDatabase: node_db
+  secretName: db-password
+  secretKey: password
+  passwordBase64: cm9vdA==

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: devops-db
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: devops-db
+spec:
+  serviceName: devops-db
+  replicas: {{ .Values.db.replicaCount }}
+  selector:
+    matchLabels:
+      app: devops-db
+  template:
+    metadata:
+      labels:
+        app: devops-db
+    spec:
+      containers:
+        - name: devops-db
+          image: "{{ .Values.db.image.repository }}:{{ .Values.db.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.db.containerPort }}
+          env:
+            - name: MYSQL_DATABASE
+              value: {{ .Values.db.mysqlDatabase | quote }}
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.db.secretName }}
+                  key: {{ .Values.db.secretKey }}
+          volumeMounts:
+            - name: db-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: db-storage
+          emptyDir: {}

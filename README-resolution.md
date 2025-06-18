@@ -59,3 +59,19 @@ docker-compose up -d
 - Com isso, fui validar o arquivo nginx.conf para verificar quais as configurações estavam presentes, e verifiquei que tratava-se de um proxy reverso, redirecionando para a api
 - Contudo, verifiquei que o proxy reverso estava usando a porta padrão http (80), o que não é o correto para esse cenário
 - Portanto, alterei a porta do endpoint para 3000, para que fosse possível realizar o direcionamento correto, e com isso, o proxy reverso passou a funcionar como o esperado.
+
+
+## Instalação no Kubernetes ##
+
+Para realizar a instalação em cluster kubernetes, criei manifestos para cada recurso que é requisitado pela aplicação.
+Além disso, optei os transformar os manifestos dos recursos em Helm Charts, o que daria maior facilidade em manipular os valores referente aos recursos.
+
+Portanto, para iniciar a aplicação, basta executar o seguinte comando (com o repositório baixado e dentro do diretório):
+
+```bash
+helm install desafio-devops ./devops-helm
+```
+
+Após isso, a aplicação será devidamente inicializada.
+
+**Para iniciar os pods, fiz o build das imagens e fiz o upload em um Registry público (Docker Hub) por convenção. Caso queira realizar o build da imagem local e inicializar com o helm, basta apenas trocar o nome da imagem no values.yaml**
