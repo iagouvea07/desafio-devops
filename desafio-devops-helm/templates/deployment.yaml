@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-app
+  namespace: desafio-devops
+  labels:
+    app: devops-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-app
+  template:
+    metadata:
+      labels:
+        app: devops-app
+    spec:
+      containers:
+        - name: app
+          image: desafio-devops-app:latest
+          ports:
+            - containerPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-nginx
+  namespace: desafio-devops
+  labels:
+    app: devops-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-nginx
+  template:
+    metadata:
+      labels:
+        app: devops-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: javielrezende/nginx:latest
+          ports:
+            - containerPort: 80

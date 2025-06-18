@@ -31,5 +31,31 @@ docker-compose up -d
 - Como vi que durante o processo de build nao havia nenhum processo de intalacao das bibliotecas, adicionei um npm install para resolver esse ponto
 - Ajustando esse ponto, as bibliotecas foram instaladas e a aplicação deixou de apresentar esse erro
 
+### Connection Timed out com MySQL ###
+- Com a aplicação iniciada vi que a api não conseguir estabelecer comunicação com o banco de dados, dando um processo de timeout
+- O primeiro ponto que fui observar eram se as credenciais que a aplicação utiliza para se comunicar estavam corretos, fiz a confirmação e estava ok, onde ele referenciavam valores do .env ou referenciavam o nome do container diretamente
+- Com isso, fui checar o container em execução, e a primeira coisa que notei foi que ele não tinha sua porta (3306) exposta, o que impedia a aplicação a alcançar o serviço
+- Após o ajuste, a aplicação iniciou sem erros
 
-#### continua ####
+### Erro ao consultar usuários ###
+
+- Com a api em execução, testei para validar se tudo estava 100%, contudo apresentou erro na solicitação GET
+- No log do NodeJS, ele apontava erro em uma função onde ele tentava percorrer um valor que deveria ser um Array, mas está como undefined
+- Devido a isso, adicionei um *console.log(_)* logo apos o insert do usuário, para validar que a operação estava sendo feita corretamente, mas retornou que o schema do banco não existia
+- Portanto, ajustei o nome do banco de dados na aplicação com o nome correto do schema criado, e a soliticação GET da api funcionou corretamente
+
+
+## Proxy Reverso NGINX ##
+
+### Copia do arquivo de configuração para a imagem ###
+- Acessando o nginx pela porta 8080, verifiquei que a unica coisa que aparecia era uma pagina padrão da ferramenta
+- Com isso, fui validar o Dockerfile para entender como era o processo de build da imagem
+- Mas quando vi, percebi que não havia nenhuma outra instrução além da referencia da imagem do NGINX, ou seja, ele estava ignorando qualquer parametrização customizada presente no nginx.conf do repositório
+- Portanto, adicionei uma instrução de COPY, referenciando o nginx.conf para substituir o arquivo /etc/nginx/conf.d/default.com, alterando assim seu comportamento
+
+
+### Redirecionamento para a API ###
+- Após o ajuste do arquivo, o redirecionamento ainda não estava 100, porque agora a aplicação passou a apresentar um **Bad Gateway** na requisição
+- Com isso, fui validar o arquivo nginx.conf para verificar quais as configurações estavam presentes, e verifiquei que tratava-se de um proxy reverso, redirecionando para a api
+- Contudo, verifiquei que o proxy reverso estava usando a porta padrão http (80), o que não é o correto para esse cenário
+- Portanto, alterei a porta do endpoint para 3000, para que fosse possível realizar o direcionamento correto, e com isso, o proxy reverso passou a funcionar como o esperado.
