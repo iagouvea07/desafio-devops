@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-app-svc
+  namespace: desafio-devops
+  labels:
+    app: devops-app-svc
+spec:
+  selector:
+    app: devops-app
+  ports:
+    - name: http
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-nginx-svc
+  namespace: desafio-devops
+  labels:
+    app: devops-nginx-svc
+spec:
+  selector:
+    app: devops-nginx
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-db-svc
+  namespace: desafio-devops
+  labels:
+    app: devops-db-svc
+spec:
+  selector:
+    app: devops-db
+  ports:
+    - name: db
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+  type: ClusterIP

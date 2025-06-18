@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: devops-db
+  namespace: desafio-devops
+  labels:
+    app: devops-db
+spec:
+  serviceName: devops-db
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-db
+  template:
+    metadata:
+      labels:
+        app: devops-db
+    spec:
+      containers:
+        - name: devops-db
+          image: desafio-devops-db:latest
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: db-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: db-storage
+          emptyDir: {}
