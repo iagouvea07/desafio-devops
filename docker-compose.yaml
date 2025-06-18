@@ -41,3 +41,6 @@ services:
             - node-network
         ports: 
             - "8080:80"
+
+networks:           ### 1 - Sem parametro de network configurado
+  node-network:
