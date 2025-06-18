@@ -23,3 +23,6 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 RUN npm install
 
 EXPOSE 3000
+
+CMD ["dockerize", "-wait", "tcp://db:3306", "-timeout", "60s", "node", "index.js"]
+
